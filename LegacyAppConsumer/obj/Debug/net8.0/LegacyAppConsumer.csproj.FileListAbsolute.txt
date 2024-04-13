@@ -35,3 +35,4 @@ C:\Users\dstas\Desktop\zadanie\LegacyAppConsumer\obj\Debug\net8.0\refint\LegacyA
 C:\Users\dstas\Desktop\zadanie\LegacyAppConsumer\obj\Debug\net8.0\LegacyAppConsumer.pdb
 C:\Users\dstas\Desktop\zadanie\LegacyAppConsumer\obj\Debug\net8.0\LegacyAppConsumer.genruntimeconfig.cache
 C:\Users\dstas\Desktop\zadanie\LegacyAppConsumer\obj\Debug\net8.0\ref\LegacyAppConsumer.dll
+C:\Users\dstas\Desktop\zadanie\LegacyAppConsumer\obj\Debug\net8.0\LegacyAppConsumer.sourcelink.json

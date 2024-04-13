@@ -5,12 +5,12 @@ namespace LegacyApp
 {
     public class UserService
     {
-        private static bool NameValidator(string name)
+        private bool NameValidator(string name)
         {
             return !string.IsNullOrEmpty(name) && name.All(char.IsLetter);
         }
         
-        private static bool EmailValidator(string email)
+        private bool EmailValidator(string email)
         {
             try
             {
@@ -23,7 +23,7 @@ namespace LegacyApp
             }
         }
         
-        private static int CalculateAge(DateTime dateOfBirth)
+        private int CalculateAge(DateTime dateOfBirth)
         {
             var now = DateTime.Now;
             int age = now.Year - dateOfBirth.Year;
@@ -31,11 +31,35 @@ namespace LegacyApp
             return age;
         }
         
-        private static bool AgeValidator(DateTime dateOfBirth)
+        private bool AgeValidator(DateTime dateOfBirth)
         {
             var age = CalculateAge(dateOfBirth);
             const int legalAge = 21;
             return age >= legalAge;
+        }
+        
+        private void SetUserCreditLimit(User user, Client client)
+        {
+            switch (client.Type)
+            {
+                case "VeryImportantClient":
+                    user.HasCreditLimit = false;
+                    break;
+                case "ImportantClient":
+                    user.HasCreditLimit = true;
+                    user.CreditLimit = GetCreditLimit(user) * 2;
+                    break;
+                default:
+                    user.HasCreditLimit = true;
+                    user.CreditLimit = GetCreditLimit(user);
+                    break;
+            }
+        }
+
+        private int GetCreditLimit(User user)
+        {
+            using var userCreditService = new UserCreditService();
+            return userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
         }
         
         
@@ -69,28 +93,7 @@ namespace LegacyApp
                 LastName = lastName
             };
 
-            if (client.Type == "VeryImportantClient")
-            {
-                user.HasCreditLimit = false;
-            }
-            else if (client.Type == "ImportantClient")
-            {
-                using (var userCreditService = new UserCreditService())
-                {
-                    int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                    creditLimit = creditLimit * 2;
-                    user.CreditLimit = creditLimit;
-                }
-            }
-            else
-            {
-                user.HasCreditLimit = true;
-                using (var userCreditService = new UserCreditService())
-                {
-                    int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                    user.CreditLimit = creditLimit;
-                }
-            }
+            SetUserCreditLimit(user, client);
 
             if (user.HasCreditLimit && user.CreditLimit < 500)
             {
